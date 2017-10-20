@@ -1,12 +1,9 @@
-Sample Module Repository
-========================
+c2xt
+====
 
-This simple project is an example repo for Python projects.
+Calling C/C++ shared libraries from xtlang is awesome. But creating the xtlang
+"headers" is a pain. This tool is flaky, and doesn't always get things right
+(the output headers may need some manual tweaking) but it's heaps better than
+having to do the whole thing manually.
 
-`Learn more <http://www.kennethreitz.org/essays/repository-structure-and-python>`_.
-
----------------
-
-If you want to learn more about ``setup.py`` files, check out `this repository <https://github.com/kennethreitz/setup.py>`_.
-
-✨🍰✨
+For more info, email ``ben@benswift.me``
