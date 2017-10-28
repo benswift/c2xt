@@ -6,7 +6,7 @@ import sys
 import site
 site.addsitedir("/usr/local/opt/llvm/lib/python2.7/site-packages/")
 import clang.cindex as clang
-cl.Config.set_library_path("/usr/local/opt/llvm/lib/")
+clang.Config.set_library_path("/usr/local/opt/llvm/lib/")
 
 
 def cursor_from_code_string(code_string):
