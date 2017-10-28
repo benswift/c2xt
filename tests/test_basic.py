@@ -1,16 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from .context import c2xt
+from c2xt.c2xt import *
 
-import unittest
-
-
-class BasicTestSuite(unittest.TestCase):
-    """Basic test cases."""
-
-    def test_absolute_truth_and_meaning(self):
-        assert True
-
-
-if __name__ == '__main__':
-    unittest.main()
+def test_int_declaration():
+    cursor = cursor_from_code_string("int ben = 32;")
+    assert cursor.spelling == "ben"
