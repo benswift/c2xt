@@ -1,90 +1,58 @@
-import clang.cindex
+import clang.cindex as clang
 
 XTLANG_TYPE_DICT = {
-    clang.cindex.TypeKind.VOID: 'void',
-    clang.cindex.TypeKind.BOOL: 'i1',
-    clang.cindex.TypeKind.CHAR_U: 'i8',
-    clang.cindex.TypeKind.UCHAR: 'i8',
-    clang.cindex.TypeKind.CHAR16: 'i16',
-    clang.cindex.TypeKind.CHAR32: 'i32',
-    clang.cindex.TypeKind.USHORT: 'i16',
-    clang.cindex.TypeKind.UINT: 'i32',
-    clang.cindex.TypeKind.ULONG: 'i32',
-    clang.cindex.TypeKind.ULONGLONG: 'i64',
-    clang.cindex.TypeKind.CHAR_S: 'i8',
-    clang.cindex.TypeKind.SCHAR: 'i8',
-    clang.cindex.TypeKind.WCHAR: 'i16',
-    clang.cindex.TypeKind.SHORT: 'i16',
-    clang.cindex.TypeKind.INT: 'i32',
-    clang.cindex.TypeKind.LONG: 'i32',
-    clang.cindex.TypeKind.LONGLONG: 'i64',
-    clang.cindex.TypeKind.FLOAT: 'float',
-    clang.cindex.TypeKind.DOUBLE: 'double',
-    clang.cindex.TypeKind.NULLPTR: 'null',
-    # clang.cindex.TypeKind.POINTER: 'i8*'
-    clang.cindex.TypeKind.ENUM: 'i32'
-    # clang.cindex.TypeKind.TYPEDEF: ''
-    # clang.cindex.TypeKind.FUNCTIONPROTO: ''
+    clang.TypeKind.VOID: 'void',
+    clang.TypeKind.BOOL: 'i1',
+    clang.TypeKind.CHAR_U: 'i8',
+    clang.TypeKind.UCHAR: 'i8',
+    clang.TypeKind.CHAR16: 'i16',
+    clang.TypeKind.CHAR32: 'i32',
+    clang.TypeKind.USHORT: 'i16',
+    clang.TypeKind.UINT: 'i32',
+    clang.TypeKind.ULONG: 'i32',
+    clang.TypeKind.ULONGLONG: 'i64',
+    clang.TypeKind.CHAR_S: 'i8',
+    clang.TypeKind.SCHAR: 'i8',
+    clang.TypeKind.WCHAR: 'i16',
+    clang.TypeKind.SHORT: 'i16',
+    clang.TypeKind.INT: 'i32',
+    clang.TypeKind.LONG: 'i32',
+    clang.TypeKind.LONGLONG: 'i64',
+    clang.TypeKind.FLOAT: 'float',
+    clang.TypeKind.DOUBLE: 'double',
+    clang.TypeKind.NULLPTR: 'null',
+    # clang.TypeKind.POINTER: 'i8*'
+    clang.TypeKind.ENUM: 'i32'
+    # clang.TypeKind.TYPEDEF: ''
+    # clang.TypeKind.FUNCTIONPROTO: ''
 }
 
 
-def xtlang_type_from_cursor(cursor):
-    XTLANG_TYPE_DICT.get(cursor.kind)
+def type_from_cursor(cursor):
+    return XTLANG_TYPE_DICT.get(cursor.kind)
 
 
-class Alias(object):
-    """an xtlang alias"""
-
-    def __init__(self, cursor):
-        self.name = cursor.spelling
-        self.pretty_type = cursor.type.spelling
-        self.docstring = ""
-
-    def __str__(self):
-        return '(bind-alias {} {} "{}")'.format(self.name,
-                                                self.pretty_type,
-                                                self.docstring)
+def format_alias(cursor):
+    return '(bind-alias {0} {1} "{2}")'.format(cursor.spelling,
+                                               cursor.type.spelling,
+                                               "")
 
 
-class NamedType(object):
-    """an xtlang named type"""
-
-    def __init__(self, name, pretty_type, docstring=""):
-        self.name = name
-        self.pretty_type = pretty_type
-        self.docstring = docstring
-
-    def __str__(self):
-        return '(bind-type {} {} "{}")'.format(self.name,
-                                               self.pretty_type,
-                                               self.docstring)
+def format_namedtype(cursor):
+    return '(bind-type {0} {1} "{2}")'.format(cursor.spelling,
+                                              cursor.type.spelling,
+                                              "")
 
 
-class GlobalVar(object):
-    """an xtlang global variable"""
-
-    def __init__(self, name, pretty_type, docstring=""):
-        self.name = name
-        self.pretty_type = pretty_type
-        self.docstring = docstring
-
-    def __str__(self):
-        return '(bind-val {} {} "{}")'.format(self.name,
-                                              self.pretty_type,
-                                              self.docstring)
+def format_globalvar(cursor):
+    return '(bind-val {0} {1} "{2}")'.format(cursor.spelling,
+                                             cursor.type.spelling,
+                                             "")
 
 
-class LibraryFunction(object):
-    """an xtlang library function"""
+def format_libfunc(cursor, library):
+    return '(bind-lib {0} {1} "{2}")'.format(library,
+                                             cursor.spelling,
+                                             cursor.type.spelling,
+                                             "")
 
-    def __init__(self, library, cursor):
-        self.library = library
-        self.name = cursor.spelling
-        # self.pretty_type = pretty_type
-        self.docstring = ""
-
-    def __str__(self):
-        return '(bind-lib {} {} {} "{}")'.format(self.library,
-                                                 self.name,
-                                                 self.pretty_type,
-                                                 self.docstring)
