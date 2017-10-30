@@ -1,4 +1,5 @@
 import clang.cindex as clang
+import sys
 
 XTLANG_TYPE_DICT = {
     clang.TypeKind.VOID: 'void',
@@ -28,37 +29,54 @@ XTLANG_TYPE_DICT = {
 }
 
 
-def type_from_cursor(cursor):
+def xtlang_type(cursor):
     return XTLANG_TYPE_DICT.get(cursor.kind)
 
 
-def format_bindalias(cursor):
-    return '(bind-alias {0} {1} "{2}")'.format(cursor.spelling,
-                                               cursor.type.spelling,
-                                               "")
+def emit_bindval(name, type, value, docstring="", file=sys.stdout):
+    print ('(bind-val {0} {1} {2} "{3}")'.format(name,
+                                                 type,
+                                                 value,
+                                                 docstring),
+           file=file)
 
 
-def format_bindtype(cursor):
-    return '(bind-type {0} {1} "{2}")'.format(cursor.spelling,
-                                              cursor.type.spelling,
-                                              "")
+def emit_bindalias(name, type, value, docstring="", file=sys.stdout):
+    print ('(bind-alias {0} {1} {2} "{3}")'.format(name,
+                                                 type,
+                                                 value,
+                                                 docstring),
+           file=file)
 
 
-def format_bindval(cursor):
-    return '(bind-val {0} {1} "{2}")'.format(cursor.spelling,
-                                             cursor.type.spelling,
-                                             "")
+def emit_bindtype(name, type, docstring="", file=sys.stdout):
+    print ('(bind-type {0} {1} "{2}")'.format(name,
+                                              type,
+                                              docstring),
+           file=file)
 
 
-def format_bindlib(cursor, library):
-    return '(bind-lib {0} {1} "{2}")'.format(library,
-                                             cursor.spelling,
-                                             cursor.type.spelling,
-                                             "")
+def emit_bindlib(library, name, type, docstring="", file=sys.stdout):
+    print ('(bind-lib {0} {1} {2} "{3}")'.format(library,
+                                                 name,
+                                                 type,
+                                                 docstring),
+           file=file)
 
 
-def format_bindlibval(cursor, library):
-    return '(bind-lib-val {0} {1} "{2}")'.format(library,
-                                                 cursor.spelling,
-                                                 cursor.type.spelling,
-                                                 "")
+def emit_bindlibval(library, name, type, docstring="", file=sys.stdout):
+    print ('(bind-lib-val {0} {1} {2} "{3}")'.format(library,
+                                                     name,
+                                                     type,
+                                                     docstring),
+           file=file)
+
+
+# enums
+
+def process_enum(cursor):
+    type_string = xtlang_type(cursor.enum_type)
+    for en in cursor.get_children():
+        emit_bindval(en.spelling, type_string, en.enum_value)
+
+
