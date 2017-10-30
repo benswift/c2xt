@@ -17,7 +17,7 @@ def cursor_from_file(filename, pp_definitions=[]):
     tu = clang.TranslationUnit.from_source(
         filename,
         args=pp_definitions,
-        options=clang.cindex.TranslationUnit.PARSE_DETAILED_PROCESSING_RECORD
+        options=clang.TranslationUnit.PARSE_DETAILED_PROCESSING_RECORD
     )
     return tu.cursor
 
