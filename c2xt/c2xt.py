@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
-# usage: c2xt.py filename.h -DDEFN_1 -DDEFN_2 ...
-
 import clang.cindex as clang
+import c2xt.xtlang as xtlang
 
 def cursor_from_code_string(code_string):
     tu = clang.TranslationUnit.from_source(
@@ -26,11 +25,13 @@ def cursor_with_name(tu, name):
     for cursor in tu.walk_preorder():
         if cursor.spelling == name:
             return cursor
-
-    return None
-
+    raise NameError('no cursor with name "{}" found'.format(name))
 
 
 if __name__ == '__main__':
-    process_file(sys.argv[1], sys.argv[2:])
-    # sys.exit()
+    try:
+        process_file(sys.argv[1], sys.argv[2:])
+        exit(0)
+    except Exception as err:
+        print(err)
+        exit(1)
