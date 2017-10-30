@@ -13,6 +13,15 @@ def cursor_from_code_string(code_string):
     return tu.cursor
 
 
+def cursor_from_file(filename, pp_definitions=[]):
+    tu = clang.TranslationUnit.from_source(
+        filename,
+        args=pp_definitions,
+        options=clang.cindex.TranslationUnit.PARSE_DETAILED_PROCESSING_RECORD
+    )
+    return tu.cursor
+
+
 def cursor_with_name(tu, name):
     for cursor in tu.cursor.walk_preorder():
         if cursor.spelling == name:
@@ -20,13 +29,6 @@ def cursor_with_name(tu, name):
 
     return None
 
-
-def process_file(filename, pp_definitions=[]):
-    tu = clang.cindex.TranslationUnit.from_source(
-        filename,
-        args=pp_definitions,
-        options=clang.cindex.TranslationUnit.PARSE_DETAILED_PROCESSING_RECORD
-    )
 
 
 if __name__ == '__main__':
