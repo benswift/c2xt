@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from c2xt.c2xt import *
+import c2xt.xtlang as xtlang
 
 class TestNanoVG:
     nvg = parse_file('tests/nanovg.h', [])
@@ -16,6 +17,11 @@ class TestNanoVG:
     def test_nvgsolidity_enum(self):
         cursor = find_child(self.nvg, 'NVG_HOLE')
         assert cursor.enum_value == 2
+
+    def test_enum_parse(self):
+        cursor = find_child(self.nvg, 'NVGwinding')
+        xtlang.process_enum(cursor)
+        assert False
 
     # def test_nvgcolor_struct():
     #     cursor = cursor_with_name(nvg, 'NVGcolor')
