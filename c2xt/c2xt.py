@@ -23,7 +23,7 @@ def cursor_from_file(filename, pp_definitions=[]):
 
 
 def cursor_with_name(tu, name):
-    for cursor in tu.cursor.walk_preorder():
+    for cursor in tu.walk_preorder():
         if cursor.spelling == name:
             return cursor
 
