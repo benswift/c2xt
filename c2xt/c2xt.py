@@ -2,6 +2,7 @@
 
 import clang.cindex as clang
 import c2xt.xtlang as xtlang
+import sys
 
 def cursor_from_code_string(code_string):
     tu = clang.TranslationUnit.from_source(
