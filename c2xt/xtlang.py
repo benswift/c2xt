@@ -32,27 +32,33 @@ def type_from_cursor(cursor):
     return XTLANG_TYPE_DICT.get(cursor.kind)
 
 
-def format_alias(cursor):
+def format_bindalias(cursor):
     return '(bind-alias {0} {1} "{2}")'.format(cursor.spelling,
                                                cursor.type.spelling,
                                                "")
 
 
-def format_namedtype(cursor):
+def format_bindtype(cursor):
     return '(bind-type {0} {1} "{2}")'.format(cursor.spelling,
                                               cursor.type.spelling,
                                               "")
 
 
-def format_globalvar(cursor):
+def format_bindval(cursor):
     return '(bind-val {0} {1} "{2}")'.format(cursor.spelling,
                                              cursor.type.spelling,
                                              "")
 
 
-def format_libfunc(cursor, library):
+def format_bindlib(cursor, library):
     return '(bind-lib {0} {1} "{2}")'.format(library,
                                              cursor.spelling,
                                              cursor.type.spelling,
                                              "")
 
+
+def format_bindlibval(cursor, library):
+    return '(bind-lib-val {0} {1} "{2}")'.format(library,
+                                                 cursor.spelling,
+                                                 cursor.type.spelling,
+                                                 "")
