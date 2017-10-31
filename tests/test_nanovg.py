@@ -2,6 +2,7 @@
 
 from c2xt.c2xt import *
 import c2xt.xtlang as xtlang
+import io
 
 class TestNanoVG:
     nvg = parse_file('tests/nanovg.h', [])
@@ -20,8 +21,11 @@ class TestNanoVG:
 
     def test_enum_parse(self):
         cursor = find_child(self.nvg, 'NVGwinding')
-        xtlang.process_enum(cursor)
-        assert False
+        with io.StringIO() as out:
+            type_string = xtlang.xtlang_type(cursor.enum_type)
+            for en in cursor.get_children():
+                xtlang.emit_bindval(en.spelling, type_string, en.enum_value, file=out)
+            assert '(bind-val NVG_CCW i32 1 "")' in out.getvalue() and '(bind-val NVG_CW i32 2 "")' in out.getvalue()
 
     # def test_nvgcolor_struct():
     #     cursor = cursor_with_name(nvg, 'NVGcolor')
