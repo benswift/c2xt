@@ -80,3 +80,19 @@ def process_enum(cursor):
         emit_bindval(en.spelling, type_string, en.enum_value)
 
 
+# macro definitions
+
+def process_macro_definition(cursor):
+    token = list(cursor.get_tokens())[1]
+
+    if token.kind == clang.TokenKind.LITERAL:
+        if token.spelling.endswith('f'):
+            type_string = 'float'
+            value = token.spelling[:-1]
+        elif '.' in token.spelling:
+            type_string = 'double'
+            value = token.spelling
+        else:
+            type_string = 'i32'
+            value = token.spelling
+        emit_bindval(cursor.spelling, type_string, value)

@@ -34,3 +34,9 @@ class TestNanoVG:
             for en in cursor.get_children():
                 xtlang.emit_bindval(en.spelling, type_string, en.enum_value, file=out)
             assert '(bind-val NVG_ALIGN_MIDDLE i32 16 "")' in out.getvalue()
+
+    def test_nvg_pi(self):
+        cursor = find_child(self.nvg, 'NVG_PI')
+        with io.StringIO() as out:
+            xtlang.process_macro_definition(cursor)
+            assert '(bind-val NVG_PI float 3.14159265358979323846264338327 "")' in out.getvalue()
