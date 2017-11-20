@@ -27,7 +27,10 @@ class TestNanoVG:
                 xtlang.emit_bindval(en.spelling, type_string, en.enum_value, file=out)
             assert '(bind-val NVG_CCW i32 1 "")' in out.getvalue() and '(bind-val NVG_CW i32 2 "")' in out.getvalue()
 
-    # def test_nvgcolor_struct():
-    #     cursor = cursor_with_name(nvg, 'NVGcolor')
-    #     print(cursor.type.spelling)
-    #     assert False
+    def test_nvg_align(self):
+        cursor = find_child(self.nvg, 'NVGalign')
+        with io.StringIO() as out:
+            type_string = xtlang.xtlang_type(cursor.enum_type)
+            for en in cursor.get_children():
+                xtlang.emit_bindval(en.spelling, type_string, en.enum_value, file=out)
+            assert '(bind-val NVG_ALIGN_MIDDLE i32 16 "")' in out.getvalue()
