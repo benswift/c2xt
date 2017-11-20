@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
 
 from c2xt.c2xt import *
+import c2xt.xtlang as xtlang
+import io
 
-def test_int_declaration():
-    cursor = parse_code_string("int ben = 32;")
-    bencursor = find_child(cursor, "ben")
-    assert bencursor.spelling == "ben"
+class TestBasicC:
+
+    def test_int_declaration(self):
+        cursor = find_child(parse_code_string("int ben = 32;"), "ben")
+        assert cursor.spelling == "ben"
