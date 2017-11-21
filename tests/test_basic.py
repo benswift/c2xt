@@ -9,6 +9,14 @@ def get_test_cursor(code_string, symbol_name):
     return find_child(parse_code_string(code_string), symbol_name)
 
 
+def dump_info(cursor):
+    for c in cursor.walk_preorder():
+        try:
+            print('{}:{}'.format(c.spelling, c.type.kind))
+        except:
+            print('{}:notype'.format(c.spelling))
+
+
 class TestBasicC:
 
     def test_int_declaration(self):
@@ -45,20 +53,26 @@ class TestXtlangTypes:
 
 
     def test_nested_array_struct(self):
-        cursor = get_test_cursor('struct ben { int[2] arr; }', 'ben')
+        cursor = get_test_cursor('struct ben { int[2] arr; };', 'ben')
         assert xtlang.xtlang_type(cursor.type) == '<|2,i32|>'
 
 
+    def test_nested_struct_array(self):
+        cursor = get_test_cursor('struct point { int x; int y;}; struct point[5] ben;', 'ben')
+        dump_info(cursor)
+        assert xtlang.xtlang_type(cursor.type) == '|5,<i32,i32>|'
+
+
     def test_one_element_struct(self):
-        cursor = get_test_cursor('struct ben { int x; }', 'ben')
+        cursor = get_test_cursor('struct ben { int x; };', 'ben')
         assert xtlang.xtlang_type(cursor.type) == '<i32>'
 
 
     def test_two_element_struct(self):
-        cursor = get_test_cursor('struct ben { int x; float y; }', 'ben')
+        cursor = get_test_cursor('struct ben { int x; float y; };', 'ben')
         assert xtlang.xtlang_type(cursor.type) == '<i32,float>'
 
 
-    # def test_nested_struct(self):
-    #     cursor = get_test_cursor('struct point { int x; int y;}; struct ben { point p; float size; }', 'ben')
-    #     assert xtlang.xtlang_type(cursor.type) == '<<i32,i32>,float>'
+    def test_nested_struct(self):
+        cursor = get_test_cursor('struct point { int x; int y;}; struct ben { struct point p; float size; }', 'ben')
+        assert xtlang.xtlang_type(cursor.type) == '<<i32,i32>,float>'
