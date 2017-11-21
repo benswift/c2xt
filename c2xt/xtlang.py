@@ -27,33 +27,9 @@ XTLANG_TYPE_DICT = {
 }
 
 
-def pointer_depth(type, depth):
-    if type.kind == clang.TypeKind.POINTER:
-        return pointer_depth(type.get_pointee(), depth+1)
-    else:
-        return depth
-
-
-def xtlang_primitive_type(type):
+def is_primitive_type(type):
     'is it a "primitive" type, from an xtlang perspective?'
     return type in keys(XTLANG_TYPE_DICT)
-
-
-def format_constantarray(type):
-    assert type.kind == clang.TypeKind.CONSTANTARRAY
-    return '|{},{}|'.format(type.element_count, format_type(type.element_type))
-
-
-def format_struct(type):
-    assert type.kind == clang.TypeKind.RECORD
-    member_types = [format_type(c.type) for c in type.get_fields()]
-    return '<{}>'.format(",".join(member_types))
-
-
-def format_closure(type):
-    return_type = type.get_result()
-    arg_types = [format_type(t) for t in type.argument_types()]
-    return '[{},{}]*'.format(format_type(return_type), ",".join(arg_types))
 
 
 def format_type(type):
@@ -70,17 +46,24 @@ def format_type(type):
         return format_type(type.get_canonical())
 
     if type.kind == clang.TypeKind.CONSTANTARRAY:
-        return format_constantarray(type)
+        return '|{},{}|'.format(type.element_count, format_type(type.element_type))
 
     if type.kind == clang.TypeKind.INCOMPLETEARRAY:
         # in C, arrays are just pointers
         return format_type(type.element_type) + '*'
 
     if type.kind == clang.TypeKind.RECORD:
-        return format_struct(type)
+        member_types = [format_type(c.type) for c in type.get_fields()]
+        return '<{}>'.format(",".join(member_types))
 
+    # anonymous struct declarations
     if type.kind == clang.CursorKind.STRUCT_DECL:
-        return format_struct(type.get_definition().type)
+        return format_type(type.get_definition().type)
+
+    if type.kind == clang.TypeKind.FUNCTIONPROTO:
+        return_type = type.get_result()
+        arg_types = [format_type(t) for t in type.argument_types()]
+        return '[{},{}]*'.format(format_type(return_type), ",".join(arg_types))
 
     else:
         try:
@@ -110,17 +93,15 @@ def format_bindlibval(library, name, type, docstring=""):
     return '(bind-lib-val {0} {1} {2} "{3}")'.format(library, name, type, docstring)
 
 
-
-# enums
-
+# enum is kindof a special case because each child is a separate bind-val,
+# so it's higher-level than the others
 def format_enum(enum_cursor):
     assert enum_cursor.kind == clang.CursorKind.ENUM_DECL
-    type_string = format_type(enum_cursor.enum_type)
+    enum_type = format_type(enum_cursor.enum_type)
 
-    enum_bindval_strings = [format_bindval(c.spelling, type_string, c.enum_value) for c in enum_cursor.get_children()]
-    enum_bindval_strings.insert(0, format_bindalias(enum_cursor.spelling, type_string, format_type(enum_cursor.type)))
+    enum_bindval_strings = [format_bindval(c.spelling, enum_type, c.enum_value) for c in enum_cursor.get_children()]
+    enum_bindval_strings.insert(0, format_bindalias(enum_cursor.spelling, enum_type, format_type(enum_cursor.type)))
     return enum_bindval_strings
-
 
 # #define
 
@@ -145,11 +126,9 @@ def format_macro_definition(defn_cursor):
         return None
 
 
-# C functions
-
 def format_function(function_cursor, libname):
     assert function_cursor.kind == clang.CursorKind.FUNCTION_DECL
-    return format_bindlib(libname, function_cursor.spelling, format_closure(function_cursor.type))
+    return format_bindlib(libname, function_cursor.spelling, format_type(function_cursor.type))
 
 # mother-of-all dispatch function (TODO doesn't work yet)
 
