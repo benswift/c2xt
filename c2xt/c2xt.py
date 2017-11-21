@@ -29,25 +29,10 @@ def find_child(cursor, name):
     raise NameError('no child cursor with name "{}" found'.format(name))
 
 
-def emit(cursor, file=sys.stdout):
-    if cursor.kind == clang.CursorKind.var_DECL:
-        return xtlang.format_bindlibval(cursor)
-    if cursor.kind == clang.CursorKind.STRUCT_DECL:
-        return xtlang.format_bindtype(cursor)
-    if cursor.kind in [clang.CursorKind.ENUM_DECL,
-                       clang.CursorKind.ENUM_CONSTANT_DECL,
-                       clang.CursorKind.MACRO_DEFINITION]:
-        return xtlang.format_bindval(cursor)
-    if cursor.kind == clang.CursorKind.FUNCTION_DECL:
-        return xtlang.format_bindlib(cursor)
-    if cursor.kind == clang.CursorKind.TYPEDEF_DECL:
-        return xtlang.format_bindalias(cursor)
-
-
 def process_file(filename, pp_definitions=[]):
     main_cursor = parse_file(filename, pp_definitions)
     for c in main_cursor.get_children():
-        emit(c)
+        print(format_cursor(c))
 
 
 if __name__ == '__main__':

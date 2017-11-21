@@ -33,57 +33,38 @@ def xtlang_type(cursor):
     return XTLANG_TYPE_DICT.get(cursor.kind)
 
 
-def emit_bindval(name, type, value, docstring="", file=sys.stdout):
-    print ('(bind-val {0} {1} {2} "{3}")'.format(name,
-                                                 type,
-                                                 value,
-                                                 docstring),
-           file=file)
+def format_bindval(name, type, value, docstring=""):
+    return '(bind-val {0} {1} {2} "{3}")'.format(name, type, value, docstring)
 
 
-def emit_bindalias(name, type, value, docstring="", file=sys.stdout):
-    print ('(bind-alias {0} {1} {2} "{3}")'.format(name,
-                                                 type,
-                                                 value,
-                                                 docstring),
-           file=file)
+def format_bindalias(name, type, value, docstring=""):
+    return '(bind-alias {0} {1} {2} "{3}")'.format(name, type, value, docstring)
 
 
-def emit_bindtype(name, type, docstring="", file=sys.stdout):
-    print ('(bind-type {0} {1} "{2}")'.format(name,
-                                              type,
-                                              docstring),
-           file=file)
+def format_bindtype(name, type, docstring=""):
+    return '(bind-type {0} {1} "{2}")'.format(name, type, docstring)
 
 
-def emit_bindlib(library, name, type, docstring="", file=sys.stdout):
-    print ('(bind-lib {0} {1} {2} "{3}")'.format(library,
-                                                 name,
-                                                 type,
-                                                 docstring),
-           file=file)
+def format_bindlib(library, name, type, docstring=""):
+    return '(bind-lib {0} {1} {2} "{3}")'.format(library, name, type, docstring)
 
 
-def emit_bindlibval(library, name, type, docstring="", file=sys.stdout):
-    print ('(bind-lib-val {0} {1} {2} "{3}")'.format(library,
-                                                     name,
-                                                     type,
-                                                     docstring),
-           file=file)
+def format_bindlibval(library, name, type, docstring=""):
+    return '(bind-lib-val {0} {1} {2} "{3}")'.format(library, name, type, docstring)
 
 
 # enums
 
-def process_enum(cursor):
-    type_string = xtlang_type(cursor.enum_type)
+def format_enum(enum_cursor):
+    type_string = xtlang_type(enum_cursor.enum_type)
     for en in cursor.get_children():
-        emit_bindval(en.spelling, type_string, en.enum_value)
+        format_bindval(en.spelling, type_string, en.enum_value)
 
 
-# macro definitions
+# #define
 
-def process_macro_definition(cursor):
-    token = list(cursor.get_tokens())[1]
+def format_macro_definition(defn_cursor):
+    token = list(defn_cursor.get_tokens())[1]
 
     if token.kind == clang.TokenKind.LITERAL:
         if token.spelling.endswith('f'):
@@ -95,4 +76,21 @@ def process_macro_definition(cursor):
         else:
             type_string = 'i32'
             value = token.spelling
-        emit_bindval(cursor.spelling, type_string, value)
+        format_bindval(cursor.spelling, type_string, value)
+
+
+# mother-of-all dispatch function (TODO doesn't work yet)
+
+def format_cursor(cursor):
+    if cursor.kind == clang.CursorKind.var_DECL:
+        return format_bindlibval(cursor)
+    if cursor.kind == clang.CursorKind.STRUCT_DECL:
+        return format_bindtype(cursor)
+    if cursor.kind in [clang.CursorKind.ENUM_DECL,
+                       clang.CursorKind.ENUM_CONSTANT_DECL,
+                       clang.CursorKind.MACRO_DEFINITION]:
+        return format_bindval(cursor)
+    if cursor.kind == clang.CursorKind.FUNCTION_DECL:
+        return format_bindlib(cursor)
+    if cursor.kind == clang.CursorKind.TYPEDEF_DECL:
+        return format_bindalias(cursor)
