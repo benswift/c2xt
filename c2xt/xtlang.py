@@ -29,8 +29,29 @@ XTLANG_TYPE_DICT = {
 }
 
 
-def xtlang_type(cursor):
-    return XTLANG_TYPE_DICT.get(cursor.kind)
+def xtlang_primitive_type(type):
+    'is it a "primitive" type, from an xtlang perspective?'
+    return type in keys(XTLANG_TYPE_DICT)
+
+
+def format_constantarray(type):
+    assert type.kind == clang.TypeKind.CONSTANTARRAY
+    return '|{},{}|'.format(type.element_count, xtlang_type(type.element_type))
+
+
+def format_struct(type):
+    assert type.kind == clang.TypeKind.RECORD
+    member_types = [xtlang_type(c) for c in type.get_children()]
+    return '<{}>'.format(",".join(member_types))
+
+
+def xtlang_type(type):
+    if type.kind == clang.TypeKind.CONSTANTARRAY:
+        return format_constantarray(type)
+    if type.kind == clang.TypeKind.RECORD:
+        return format_struct(type)
+    else:
+        return XTLANG_TYPE_DICT.get(type.kind)
 
 
 def format_bindval(name, type, value, docstring=""):
@@ -51,6 +72,7 @@ def format_bindlib(library, name, type, docstring=""):
 
 def format_bindlibval(library, name, type, docstring=""):
     return '(bind-lib-val {0} {1} {2} "{3}")'.format(library, name, type, docstring)
+
 
 
 # enums
@@ -99,15 +121,15 @@ def format_function(function_cursor, libname):
 # mother-of-all dispatch function (TODO doesn't work yet)
 
 def format_cursor(cursor):
-    if cursor.kind == clang.CursorKind.var_DECL:
-        return format_bindlibval(cursor)
-    if cursor.kind == clang.CursorKind.STRUCT_DECL:
-        return format_bindtype(cursor)
-    if cursor.kind in [clang.CursorKind.ENUM_DECL,
-                       clang.CursorKind.ENUM_CONSTANT_DECL,
-                       clang.CursorKind.MACRO_DEFINITION]:
-        return format_bindval(cursor)
-    if cursor.kind == clang.CursorKind.FUNCTION_DECL:
-        return format_bindlib(cursor)
-    if cursor.kind == clang.CursorKind.TYPEDEF_DECL:
-        return format_bindalias(cursor)
+    if cursor.kind in [clang.CursorKind.ENUM_DECL, clang.CursorKind.ENUM_CONSTANT_DECL]:
+        return format_enum(cursor)
+    if cursor.kind == clang.CursorKind.MACRO_DEFINITION:
+        return format_macro_definition(cursor)
+    # if cursor.kind == clang.CursorKind.VAR_DECL:
+    #     return format_bindlibval(cursor)
+    # if cursor.kind == clang.CursorKind.STRUCT_DECL:
+    #     return format_bindtype(cursor)
+    # if cursor.kind == clang.CursorKind.FUNCTION_DECL:
+    #     return format_bindlib(cursor)
+    # if cursor.kind == clang.CursorKind.TYPEDEF_DECL:
+    #     return format_bindalias(cursor)
