@@ -24,8 +24,6 @@ XTLANG_TYPE_DICT = {
     clang.TypeKind.NULLPTR: 'null',
     # clang.TypeKind.POINTER: 'i8*'
     clang.TypeKind.ENUM: 'i32'
-    # clang.TypeKind.TYPEDEF: ''
-    # clang.TypeKind.FUNCTIONPROTO: ''
 }
 
 
