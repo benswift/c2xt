@@ -51,7 +51,11 @@ def xtlang_type(type):
     if type.kind == clang.TypeKind.RECORD:
         return format_struct(type)
     else:
-        return XTLANG_TYPE_DICT.get(type.kind)
+        try:
+            return XTLANG_TYPE_DICT[type.kind]
+        except KeyError:
+            print('Unknown base type: {}'.format(type.kind))
+            raise
 
 
 def format_bindval(name, type, value, docstring=""):
