@@ -41,7 +41,7 @@ def format_constantarray(type):
 
 def format_struct(type):
     assert type.kind == clang.TypeKind.RECORD
-    member_types = [xtlang_type(c) for c in type.get_children()]
+    member_types = [xtlang_type(c.type) for c in type.get_fields()]
     return '<{}>'.format(",".join(member_types))
 
 

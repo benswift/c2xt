@@ -44,6 +44,6 @@ class TestXtlangTypes:
         assert xtlang.xtlang_type(cursor.type) == '|10,i32|'
 
 
-    # def test_one_element_struct(self):
-    #     cursor = get_test_cursor('struct ben { int x; }', 'ben')
-    #     assert xtlang.xtlang_type(cursor.type) == '<i32>'
+    def test_one_element_struct(self):
+        cursor = get_test_cursor('struct ben { int x; }', 'ben')
+        assert xtlang.xtlang_type(cursor.type) == '<i32>'
