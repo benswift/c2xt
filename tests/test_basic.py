@@ -76,3 +76,13 @@ class TestXtlangTypes:
     def test_nested_struct(self):
         cursor = get_test_cursor('struct point { int x; int y;}; struct ben { struct point p; float size; }', 'ben')
         assert xtlang.xtlang_type(cursor.type) == '<<i32,i32>,float>'
+
+
+    def test_pointer(self):
+        cursor = get_test_cursor('int *ben;', 'ben')
+        assert xtlang.xtlang_type(cursor.type) == 'i32*'
+
+
+    def test_double_pointer(self):
+        cursor = get_test_cursor('float **ben;', 'ben')
+        assert xtlang.xtlang_type(cursor.type) == 'float**'

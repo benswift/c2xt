@@ -27,6 +27,13 @@ XTLANG_TYPE_DICT = {
 }
 
 
+def pointer_depth(type, depth):
+    if type.kind == clang.TypeKind.POINTER:
+        return pointer_depth(type.get_pointee(), depth+1)
+    else:
+        return depth
+
+
 def xtlang_primitive_type(type):
     'is it a "primitive" type, from an xtlang perspective?'
     return type in keys(XTLANG_TYPE_DICT)
@@ -44,12 +51,24 @@ def format_struct(type):
 
 
 def xtlang_type(type):
+    if type.kind == clang.TypeKind.POINTER:
+        depth = 1
+        base_type = type.get_pointee()
+        while base_type.kind == clang.TypeKind.POINTER:
+            print(type.spelling)
+            depth += 1
+            base_type = base_type.get_pointee()
+        return xtlang_type(base_type) + ('*' * depth)
+
     if type.kind == clang.TypeKind.ELABORATED:
         return xtlang_type(type.get_canonical())
+
     if type.kind == clang.TypeKind.CONSTANTARRAY:
         return format_constantarray(type)
+
     if type.kind == clang.TypeKind.RECORD:
         return format_struct(type)
+
     else:
         try:
             return XTLANG_TYPE_DICT[type.kind]
