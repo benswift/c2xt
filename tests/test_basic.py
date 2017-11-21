@@ -78,6 +78,11 @@ class TestXtlangTypes:
         assert xtlang.xtlang_type(cursor.type) == '<<i32,i32>,float>'
 
 
+    def test_anon_inner_struct(self):
+        cursor = get_test_cursor('struct ben { struct { float x, y; }; int jiblet; }', 'ben')
+        assert xtlang.xtlang_type(cursor.type) == '<<float,float>,i32>'
+
+
     def test_pointer(self):
         cursor = get_test_cursor('int *ben;', 'ben')
         assert xtlang.xtlang_type(cursor.type) == 'i32*'

@@ -79,6 +79,9 @@ def xtlang_type(type):
     if type.kind == clang.TypeKind.RECORD:
         return format_struct(type)
 
+    if type.kind == clang.CursorKind.STRUCT_DECL:
+        return format_struct(type.get_definition().type)
+
     else:
         try:
             return XTLANG_TYPE_DICT[type.kind]
