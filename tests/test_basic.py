@@ -58,7 +58,7 @@ class TestXtlangTypes:
 
 
     def test_nested_struct_array(self):
-        cursor = get_test_cursor('struct point { int x; int y;}; struct point[5] ben;', 'ben')
+        cursor = get_test_cursor('struct point { int x; int y; }; struct point[5] ben;', 'ben')
         dump_info(cursor)
         assert xtlang.xtlang_type(cursor.type) == '|5,<i32,i32>|'
 
@@ -86,3 +86,8 @@ class TestXtlangTypes:
     def test_double_pointer(self):
         cursor = get_test_cursor('float **ben;', 'ben')
         assert xtlang.xtlang_type(cursor.type) == 'float**'
+
+
+    def test_function_args(self):
+        cursor = get_test_cursor('int main(int argc, char *argv[]);', 'main')
+        assert xtlang.format_function(cursor, 'testlib') == '(bind-lib testlib main [i32,i32,i8**]* "")'

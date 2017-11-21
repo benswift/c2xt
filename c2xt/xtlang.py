@@ -50,6 +50,12 @@ def format_struct(type):
     return '<{}>'.format(",".join(member_types))
 
 
+def format_closure(type):
+    return_type = type.get_result()
+    arg_types = [xtlang_type(t) for t in type.argument_types()]
+    return '[{},{}]*'.format(xtlang_type(return_type), ",".join(arg_types))
+
+
 def xtlang_type(type):
     if type.kind == clang.TypeKind.POINTER:
         depth = 1
@@ -139,11 +145,8 @@ def format_macro_definition(defn_cursor):
 # C functions
 
 def format_function(function_cursor, libname):
-    assert function_cursor.kind in [clang.CursorKind.FUNCTION_DECL]
-    for arg in function_cursor.type.argument_types():
-        print(arg.spelling)
-
-    return format_bindlib(libname, function_cursor.spelling, "TODO")
+    assert function_cursor.kind == clang.CursorKind.FUNCTION_DECL
+    return format_bindlib(libname, function_cursor.spelling, format_closure(function_cursor.type))
 
 # mother-of-all dispatch function (TODO doesn't work yet)
 
