@@ -56,17 +56,23 @@ def format_bindlibval(library, name, type, docstring=""):
 # enums
 
 def format_enum(enum_cursor):
+    assert enum_cursor.kind == clang.CursorKind.ENUM_DECL
     type_string = xtlang_type(enum_cursor.enum_type)
-    for en in cursor.get_children():
-        format_bindval(en.spelling, type_string, en.enum_value)
+
+    enum_bindval_strings = [format_bindval(c.spelling, type_string, c.enum_value) for c in enum_cursor.get_children()]
+    enum_bindval_strings.insert(0, format_bindalias(enum_cursor.spelling, type_string, "enum"))
+    return enum_bindval_strings
 
 
 # #define
 
 def format_macro_definition(defn_cursor):
+    assert defn_cursor.kind == clang.CursorKind.MACRO_DEFINITION
     token = list(defn_cursor.get_tokens())[1]
+    print('token {} {}'.format(token.kind, token.spelling))
 
     if token.kind == clang.TokenKind.LITERAL:
+
         if token.spelling.endswith('f'):
             type_string = 'float'
             value = token.spelling[:-1]
@@ -76,7 +82,9 @@ def format_macro_definition(defn_cursor):
         else:
             type_string = 'i32'
             value = token.spelling
-        format_bindval(cursor.spelling, type_string, value)
+        return format_bindval(defn_cursor.spelling, type_string, value)
+    else:
+        return None
 
 
 # mother-of-all dispatch function (TODO doesn't work yet)

@@ -21,22 +21,14 @@ class TestNanoVG:
 
     def test_enum_parse(self):
         cursor = find_child(self.nvg, 'NVGwinding')
-        with io.StringIO() as out:
-            type_string = xtlang.xtlang_type(cursor.enum_type)
-            for en in cursor.get_children():
-                xtlang.emit_bindval(en.spelling, type_string, en.enum_value, file=out)
-            assert '(bind-val NVG_CCW i32 1 "")' in out.getvalue() and '(bind-val NVG_CW i32 2 "")' in out.getvalue()
+        bind_vals = xtlang.format_enum(cursor)
+        assert '(bind-val NVG_CCW i32 1 "")' in bind_vals and '(bind-val NVG_CW i32 2 "")' in bind_vals
 
     def test_nvg_align(self):
         cursor = find_child(self.nvg, 'NVGalign')
-        with io.StringIO() as out:
-            type_string = xtlang.xtlang_type(cursor.enum_type)
-            for en in cursor.get_children():
-                xtlang.emit_bindval(en.spelling, type_string, en.enum_value, file=out)
-            assert '(bind-val NVG_ALIGN_MIDDLE i32 16 "")' in out.getvalue()
+        bind_vals = xtlang.format_enum(cursor)
+        assert '(bind-val NVG_ALIGN_MIDDLE i32 16 "")' in bind_vals
 
     def test_nvg_pi(self):
         cursor = find_child(self.nvg, 'NVG_PI')
-        with io.StringIO() as out:
-            xtlang.process_macro_definition(cursor)
-            assert '(bind-val NVG_PI float 3.14159265358979323846264338327 "")' in out.getvalue()
+        assert xtlang.format_macro_definition(cursor) == '(bind-val NVG_PI float 3.14159265358979323846264338327 "")'
