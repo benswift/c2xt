@@ -44,6 +44,8 @@ def format_struct(type):
 
 
 def xtlang_type(type):
+    if type.kind == clang.TypeKind.ELABORATED:
+        return xtlang_type(type.get_canonical())
     if type.kind == clang.TypeKind.CONSTANTARRAY:
         return format_constantarray(type)
     if type.kind == clang.TypeKind.RECORD:
