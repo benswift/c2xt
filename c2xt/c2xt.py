@@ -4,6 +4,9 @@ import clang.cindex as clang
 import c2xt.xtlang as xtlang
 import sys
 
+
+# utilities
+
 def parse_code_string(code_string):
     tu = clang.TranslationUnit.from_source(
         'xtlang_fragment.c',
@@ -29,15 +32,17 @@ def find_child(cursor, name):
     raise NameError('no child cursor with name "{}" found'.format(name))
 
 
-def process_file(filename, pp_definitions=[]):
+def process_file(filename, outfile, pp_definitions):
     main_cursor = parse_file(filename, pp_definitions)
     for c in main_cursor.get_children():
-        print(format_cursor(c))
+        print(format_cursor(c), sep='', end='\r\n', file=outfile)
 
 
 if __name__ == '__main__':
     try:
-        process_file(sys.argv[1], sys.argv[2:])
+        # ./c2xt.py infile [outfile preprocessor_definitions ...]
+        with open(sys.argv[2], 'w') as outfile:
+            process_file(sys.argv[1], outfile, sys.argv[3:])
         exit(0)
     except Exception as err:
         print(err)

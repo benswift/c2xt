@@ -95,4 +95,4 @@ class TestXtlangTypes:
 
     def test_function_args(self):
         cursor = get_test_cursor('int main(int argc, char *argv[]);', 'main')
-        assert xtlang.format_function(cursor, 'testlib') == '(bind-lib testlib main [i32,i32,i8**]* "")'
+        assert xtlang.format_cursor(cursor) == '(bind-lib libfoo main [i32,i32,i8**]* "")'

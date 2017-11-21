@@ -1,6 +1,12 @@
 import clang.cindex as clang
 import sys
 
+# globals (yuck)
+
+TARGET_SHLIB_NAME = 'libfoo'
+
+# big-ol' C -> xtlang primitive type mapping
+
 XTLANG_TYPE_DICT = {
     clang.TypeKind.VOID: 'void',
     clang.TypeKind.BOOL: 'i1',
@@ -85,8 +91,8 @@ def format_bindtype(name, type, docstring=""):
     return '(bind-type {0} {1} "{2}")'.format(name, type, docstring)
 
 
-def format_bindlib(library, name, type, docstring=""):
-    return '(bind-lib {0} {1} {2} "{3}")'.format(library, name, type, docstring)
+def format_bindlib(name, type, docstring=""):
+    return '(bind-lib {0} {1} {2} "{3}")'.format(TARGET_SHLIB_NAME, name, type, docstring)
 
 
 def format_bindlibval(library, name, type, docstring=""):
@@ -126,22 +132,18 @@ def format_macro_definition(defn_cursor):
         return None
 
 
-def format_function(function_cursor, libname):
-    assert function_cursor.kind == clang.CursorKind.FUNCTION_DECL
-    return format_bindlib(libname, function_cursor.spelling, format_type(function_cursor.type))
-
 # mother-of-all dispatch function (TODO doesn't work yet)
 
 def format_cursor(cursor):
     if cursor.kind in [clang.CursorKind.ENUM_DECL, clang.CursorKind.ENUM_CONSTANT_DECL]:
-        return format_enum(cursor)
+        return '\n'.join(format_enum(cursor))
     if cursor.kind == clang.CursorKind.MACRO_DEFINITION:
         return format_macro_definition(cursor)
-    # if cursor.kind == clang.CursorKind.VAR_DECL:
-    #     return format_bindlibval(cursor)
-    # if cursor.kind == clang.CursorKind.STRUCT_DECL:
-    #     return format_bindtype(cursor)
-    # if cursor.kind == clang.CursorKind.FUNCTION_DECL:
-    #     return format_bindlib(cursor)
+    if cursor.kind == clang.CursorKind.VAR_DECL:
+        return format_bindlibval(cursor)
+    if cursor.kind == clang.CursorKind.STRUCT_DECL:
+        return format_bindtype(cursor)
+    if cursor.kind == clang.CursorKind.FUNCTION_DECL:
+        return format_bindlib(cursor.spelling, format_type(cursor.type))
     # if cursor.kind == clang.CursorKind.TYPEDEF_DECL:
     #     return format_bindalias(cursor)
