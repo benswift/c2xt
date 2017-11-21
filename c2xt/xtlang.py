@@ -41,22 +41,22 @@ def xtlang_primitive_type(type):
 
 def format_constantarray(type):
     assert type.kind == clang.TypeKind.CONSTANTARRAY
-    return '|{},{}|'.format(type.element_count, xtlang_type(type.element_type))
+    return '|{},{}|'.format(type.element_count, format_type(type.element_type))
 
 
 def format_struct(type):
     assert type.kind == clang.TypeKind.RECORD
-    member_types = [xtlang_type(c.type) for c in type.get_fields()]
+    member_types = [format_type(c.type) for c in type.get_fields()]
     return '<{}>'.format(",".join(member_types))
 
 
 def format_closure(type):
     return_type = type.get_result()
-    arg_types = [xtlang_type(t) for t in type.argument_types()]
-    return '[{},{}]*'.format(xtlang_type(return_type), ",".join(arg_types))
+    arg_types = [format_type(t) for t in type.argument_types()]
+    return '[{},{}]*'.format(format_type(return_type), ",".join(arg_types))
 
 
-def xtlang_type(type):
+def format_type(type):
     if type.kind == clang.TypeKind.POINTER:
         depth = 1
         base_type = type.get_pointee()
@@ -64,17 +64,17 @@ def xtlang_type(type):
             print(type.spelling)
             depth += 1
             base_type = base_type.get_pointee()
-        return xtlang_type(base_type) + ('*' * depth)
+        return format_type(base_type) + ('*' * depth)
 
     if type.kind == clang.TypeKind.ELABORATED:
-        return xtlang_type(type.get_canonical())
+        return format_type(type.get_canonical())
 
     if type.kind == clang.TypeKind.CONSTANTARRAY:
         return format_constantarray(type)
 
     if type.kind == clang.TypeKind.INCOMPLETEARRAY:
         # in C, arrays are just pointers
-        return xtlang_type(type.element_type) + '*'
+        return format_type(type.element_type) + '*'
 
     if type.kind == clang.TypeKind.RECORD:
         return format_struct(type)
@@ -115,10 +115,10 @@ def format_bindlibval(library, name, type, docstring=""):
 
 def format_enum(enum_cursor):
     assert enum_cursor.kind == clang.CursorKind.ENUM_DECL
-    type_string = xtlang_type(enum_cursor.enum_type)
+    type_string = format_type(enum_cursor.enum_type)
 
     enum_bindval_strings = [format_bindval(c.spelling, type_string, c.enum_value) for c in enum_cursor.get_children()]
-    enum_bindval_strings.insert(0, format_bindalias(enum_cursor.spelling, type_string, xtlang_type(enum_cursor.type)))
+    enum_bindval_strings.insert(0, format_bindalias(enum_cursor.spelling, type_string, format_type(enum_cursor.type)))
     return enum_bindval_strings
 
 

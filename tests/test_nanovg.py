@@ -45,9 +45,9 @@ class TestNanoVG:
     def test_NVGcolor(self):
         cursor = find_child(self.nvg, 'NVGcolor')
         dump_info(cursor)
-        assert xtlang.xtlang_type(cursor) == '<float,float,float,float>'
+        assert xtlang.format_type(cursor) == '<float,float,float,float>'
 
     def test_NVGglyphPosition(self):
         cursor = find_child(self.nvg, 'NVGglyphPosition')
         dump_info(cursor)
-        assert xtlang.xtlang_type(cursor) == '<i8*,float,float,float>'
+        assert xtlang.format_type(cursor) == '<i8*,float,float,float>'

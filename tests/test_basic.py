@@ -49,48 +49,48 @@ class TestXtlangTypes:
 
     def test_array(self):
         cursor = get_test_cursor('int[10] ben;', 'ben')
-        assert xtlang.xtlang_type(cursor.type) == '|10,i32|'
+        assert xtlang.format_type(cursor.type) == '|10,i32|'
 
 
     def test_nested_array_struct(self):
         cursor = get_test_cursor('struct ben { int[2] arr; };', 'ben')
-        assert xtlang.xtlang_type(cursor.type) == '<|2,i32|>'
+        assert xtlang.format_type(cursor.type) == '<|2,i32|>'
 
 
     def test_nested_struct_array(self):
         cursor = get_test_cursor('struct point { int x; int y; }; struct point[5] ben;', 'ben')
         dump_info(cursor)
-        assert xtlang.xtlang_type(cursor.type) == '|5,<i32,i32>|'
+        assert xtlang.format_type(cursor.type) == '|5,<i32,i32>|'
 
 
     def test_one_element_struct(self):
         cursor = get_test_cursor('struct ben { int x; };', 'ben')
-        assert xtlang.xtlang_type(cursor.type) == '<i32>'
+        assert xtlang.format_type(cursor.type) == '<i32>'
 
 
     def test_two_element_struct(self):
         cursor = get_test_cursor('struct ben { int x; float y; };', 'ben')
-        assert xtlang.xtlang_type(cursor.type) == '<i32,float>'
+        assert xtlang.format_type(cursor.type) == '<i32,float>'
 
 
     def test_nested_struct(self):
         cursor = get_test_cursor('struct point { int x; int y;}; struct ben { struct point p; float size; }', 'ben')
-        assert xtlang.xtlang_type(cursor.type) == '<<i32,i32>,float>'
+        assert xtlang.format_type(cursor.type) == '<<i32,i32>,float>'
 
 
     def test_anon_inner_struct(self):
         cursor = get_test_cursor('struct ben { struct { float x, y; }; int jiblet; }', 'ben')
-        assert xtlang.xtlang_type(cursor.type) == '<<float,float>,i32>'
+        assert xtlang.format_type(cursor.type) == '<<float,float>,i32>'
 
 
     def test_pointer(self):
         cursor = get_test_cursor('int *ben;', 'ben')
-        assert xtlang.xtlang_type(cursor.type) == 'i32*'
+        assert xtlang.format_type(cursor.type) == 'i32*'
 
 
     def test_double_pointer(self):
         cursor = get_test_cursor('float **ben;', 'ben')
-        assert xtlang.xtlang_type(cursor.type) == 'float**'
+        assert xtlang.format_type(cursor.type) == 'float**'
 
 
     def test_function_args(self):
