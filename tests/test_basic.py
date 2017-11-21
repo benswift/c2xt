@@ -31,3 +31,7 @@ class TestBasicC:
     # def test_macro_long_int_literal(self):
     #     cursor = get_test_cursor('#define LONG_INT_CONST 24ULL', 'LONG_INT_CONST')
     #     assert xtlang.format_macro_definition(cursor) == '(bind-val LONG_INT_CONST i64 54 "")'
+
+    def test_function_proto(self):
+        cursor = get_test_cursor('int main(int argc, char[] *argv);', 'main')
+        assert xtlang.format_function(cursor, 'libtest') == '(bind-lib main [i32,i32,i8**] "")'

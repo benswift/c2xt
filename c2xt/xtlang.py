@@ -87,6 +87,15 @@ def format_macro_definition(defn_cursor):
         return None
 
 
+# C functions
+
+def format_function(function_cursor, libname):
+    assert function_cursor.kind in [clang.CursorKind.FUNCTION_DECL]
+    for arg in function_cursor.type.argument_types():
+        print(arg.spelling)
+
+    return format_bindlib(libname, function_cursor.spelling, "TODO")
+
 # mother-of-all dispatch function (TODO doesn't work yet)
 
 def format_cursor(cursor):
