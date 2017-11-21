@@ -66,6 +66,10 @@ def xtlang_type(type):
     if type.kind == clang.TypeKind.CONSTANTARRAY:
         return format_constantarray(type)
 
+    if type.kind == clang.TypeKind.INCOMPLETEARRAY:
+        # in C, arrays are just pointers
+        return xtlang_type(type.element_type) + '*'
+
     if type.kind == clang.TypeKind.RECORD:
         return format_struct(type)
 
