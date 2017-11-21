@@ -86,7 +86,7 @@ def format_enum(enum_cursor):
     type_string = xtlang_type(enum_cursor.enum_type)
 
     enum_bindval_strings = [format_bindval(c.spelling, type_string, c.enum_value) for c in enum_cursor.get_children()]
-    enum_bindval_strings.insert(0, format_bindalias(enum_cursor.spelling, type_string, "enum"))
+    enum_bindval_strings.insert(0, format_bindalias(enum_cursor.spelling, type_string, xtlang_type(enum_cursor.type)))
     return enum_bindval_strings
 
 
