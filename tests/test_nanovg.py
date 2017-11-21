@@ -4,6 +4,15 @@ from c2xt.c2xt import *
 import c2xt.xtlang as xtlang
 import io
 
+
+def dump_info(cursor):
+    for c in cursor.walk_preorder():
+        try:
+            print('{}:{}'.format(c.spelling, c.type.kind))
+        except:
+            print('{}:notype'.format(c.spelling))
+
+
 class TestNanoVG:
     nvg = parse_file('tests/nanovg.h', [])
 
@@ -32,3 +41,13 @@ class TestNanoVG:
     def test_nvg_pi(self):
         cursor = find_child(self.nvg, 'NVG_PI')
         assert xtlang.format_macro_definition(cursor) == '(bind-val NVG_PI float 3.14159265358979323846264338327 "")'
+
+    def test_NVGcolor(self):
+        cursor = find_child(self.nvg, 'NVGcolor')
+        dump_info(cursor)
+        assert xtlang.xtlang_type(cursor) == '<float,float,float,float>'
+
+    def test_NVGglyphPosition(self):
+        cursor = find_child(self.nvg, 'NVGglyphPosition')
+        dump_info(cursor)
+        assert xtlang.xtlang_type(cursor) == '<i8*,float,float,float>'

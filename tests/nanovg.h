@@ -32,13 +32,14 @@ extern "C" {
 
 typedef struct NVGcontext NVGcontext;
 
+  // parser tool doesn't handle this weird nameless struct/union, so just treat it as a struct for now
 struct NVGcolor {
-	union {
-		float rgba[4];
-		struct {
+	//union {
+	//	float rgba[4];
+	//	struct {
 			float r,g,b,a;
-		};
-	};
+	//	};
+	//};
 };
 typedef struct NVGcolor NVGcolor;
 
