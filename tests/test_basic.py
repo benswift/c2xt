@@ -44,6 +44,21 @@ class TestXtlangTypes:
         assert xtlang.xtlang_type(cursor.type) == '|10,i32|'
 
 
+    def test_nested_array_struct(self):
+        cursor = get_test_cursor('struct ben { int[2] arr; }', 'ben')
+        assert xtlang.xtlang_type(cursor.type) == '<|2,i32|>'
+
+
     def test_one_element_struct(self):
         cursor = get_test_cursor('struct ben { int x; }', 'ben')
         assert xtlang.xtlang_type(cursor.type) == '<i32>'
+
+
+    def test_two_element_struct(self):
+        cursor = get_test_cursor('struct ben { int x; float y; }', 'ben')
+        assert xtlang.xtlang_type(cursor.type) == '<i32,float>'
+
+
+    # def test_nested_struct(self):
+    #     cursor = get_test_cursor('struct point { int x; int y;}; struct ben { point p; float size; }', 'ben')
+    #     assert xtlang.xtlang_type(cursor.type) == '<<i32,i32>,float>'
