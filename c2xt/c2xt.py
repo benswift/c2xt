@@ -21,20 +21,13 @@ import sys
 # utilities
 
 def parse_code_string(code_string):
-    tu = clang.TranslationUnit.from_source(
-        'xtlang_fragment.c',
-        unsaved_files=[('xtlang_fragment.c', code_string)],
-        options=clang.TranslationUnit.PARSE_DETAILED_PROCESSING_RECORD
-    )
+    unsaved_files = [('xtlang_fragment.c', code_string)]
+    tu = clang.TranslationUnit.from_source('xtlang_fragment.c', unsaved_files)
     return tu.cursor
 
 
 def parse_file(filename, pp_definitions):
-    tu = clang.TranslationUnit.from_source(
-        filename,
-        args=pp_definitions,
-        options=clang.TranslationUnit.PARSE_DETAILED_PROCESSING_RECORD
-    )
+    tu = clang.TranslationUnit.from_source(filename, args=pp_definitions)
     return tu.cursor
 
 
