@@ -41,7 +41,7 @@ def find_child(cursor, name):
 def process_file(filename, outfile, pp_definitions):
     main_cursor = parse_file(filename, pp_definitions)
     for c in main_cursor.get_children():
-        print(format_cursor(c), sep='', end='\r\n', file=outfile)
+        print(xtlang.format_cursor(c), end='\r\n', file=outfile)
 
 
 def main():
