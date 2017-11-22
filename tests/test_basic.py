@@ -104,6 +104,11 @@ class TestSingleDefinitions:
         assert xtlang.format_cursor(cursor) == '(bind-lib-val libfoo ben i8*** "")'
 
 
+    def test_typedef(self):
+        cursor = get_test_cursor('typedef int ben;', 'ben')
+        assert xtlang.format_cursor(cursor) == '(bind-alias ben i32 "")'
+
+
     def test_function_proto(self):
         cursor = get_test_cursor('int main(int argc, char *argv[]);', 'main')
         assert xtlang.format_cursor(cursor) == '(bind-lib libfoo main [i32,i32,i8**]* "")'
