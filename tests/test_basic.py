@@ -70,6 +70,11 @@ class TestXtlangTypes:
         assert xtlang.format_type(cursor.type) == 'float**'
 
 
+    def test_pointer_to_void(self):
+        cursor = get_test_cursor('void *opaque;', 'opaque')
+        assert xtlang.format_type(cursor.type) == 'i8*'
+
+
 class TestSingleDefinitions:
 
 
