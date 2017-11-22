@@ -45,6 +45,11 @@ class TestXtlangTypes:
         assert xtlang.format_type(cursor.type) == '<i32>'
 
 
+    def test_inner_struct_ptr(self):
+        cursor = get_test_cursor('struct inner { int x; }; struct ben { inner *i; };', 'ben')
+        assert xtlang.format_type(cursor.type) == '<inner*>'
+
+
     def test_two_element_struct(self):
         cursor = get_test_cursor('struct ben { int x; float y; };', 'ben')
         assert xtlang.format_type(cursor.type) == '<i32,float>'

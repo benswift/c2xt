@@ -46,15 +46,10 @@ def format_type(type):
             depth += 1
             base_type = base_type.get_pointee()
 
-        try:
+        if base_type.get_declaration().kind == clang.CursorKind.NO_DECL_FOUND:
             return format_type(base_type) + ('*' * depth)
-        except KeyError:
-            # if the base type isn't one of the primitives, assume it's a 'handle'
-            opaque_type = base_type.get_declaration()
-            if opaque_type.kind == CursorKind.NO_DECL_FOUND:
-                raise KeyError('Unknown base type: {}'.format(type.kind))
-            else:
-                return opaque_type.spelling + ('*' * depth)
+        else:
+            return base_type.get_declaration().spelling + ('*' * depth)
 
     if type.kind == clang.TypeKind.ELABORATED:
         return format_type(type.get_canonical())
