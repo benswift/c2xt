@@ -38,7 +38,7 @@ def process_file(filename, outfile, pp_definitions):
         print(format_cursor(c), sep='', end='\r\n', file=outfile)
 
 
-if __name__ == '__main__':
+def main():
     try:
         # ./c2xt.py infile [outfile preprocessor_definitions ...]
         with open(sys.argv[2], 'w') as outfile:
@@ -47,3 +47,7 @@ if __name__ == '__main__':
     except Exception as err:
         print(err)
         exit(1)
+
+
+if __name__ == '__main__':
+    main()
