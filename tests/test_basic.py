@@ -74,15 +74,15 @@ class TestSingleDefinitions:
 
     def test_macro_float_literal(self):
         cursor = get_test_cursor('#define FLOAT_CONST 2.65464f', 'FLOAT_CONST')
-        assert xtlang.format_macro_definition(cursor) == '(bind-val FLOAT_CONST float 2.65464 "")'
+        assert xtlang.format_cursor(cursor) == '(bind-val FLOAT_CONST float 2.65464 "")'
 
     def test_macro_double_literal(self):
         cursor = get_test_cursor('#define DOUBLE_CONST 2.6544', 'DOUBLE_CONST')
-        assert xtlang.format_macro_definition(cursor) == '(bind-val DOUBLE_CONST double 2.6544 "")'
+        assert xtlang.format_cursor(cursor) == '(bind-val DOUBLE_CONST double 2.6544 "")'
 
     def test_macro_int_literal(self):
         cursor = get_test_cursor('#define INT_CONST 24', 'INT_CONST')
-        assert xtlang.format_macro_definition(cursor) == '(bind-val INT_CONST i32 24 "")'
+        assert xtlang.format_cursor(cursor) == '(bind-val INT_CONST i32 24 "")'
 
     # not sure how best to deal with different 'sizes' of #define constants
     # def test_macro_long_int_literal(self):
