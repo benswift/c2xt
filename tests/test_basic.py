@@ -94,9 +94,14 @@ class TestSingleDefinitions:
     #     assert xtlang.format_macro_definition(cursor) == '(bind-val LONG_INT_CONST i64 54 "")'
 
 
-    def test_global_var(self):
+    def test_simple_global_var(self):
         cursor = get_test_cursor('int benglobal = 45;', 'benglobal')
         assert xtlang.format_cursor(cursor) == '(bind-lib-val libfoo benglobal i32 "")'
+
+
+    def test_global_array_var(self):
+        cursor = get_test_cursor('char **ben[]= 45;', 'ben')
+        assert xtlang.format_cursor(cursor) == '(bind-lib-val libfoo ben i8*** "")'
 
 
     def test_function_proto(self):
