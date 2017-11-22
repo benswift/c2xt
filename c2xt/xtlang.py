@@ -87,8 +87,8 @@ def format_bindval(name, type, value, docstring=""):
     return '(bind-val {0} {1} {2} "{3}")'.format(name, type, value, docstring)
 
 
-def format_bindalias(name, type, value, docstring=""):
-    return '(bind-alias {0} {1} {2} "{3}")'.format(name, type, value, docstring)
+def format_bindalias(name, type, docstring=""):
+    return '(bind-alias {0} {1} "{2}")'.format(name, type, docstring)
 
 
 def format_bindtype(name, type, docstring=""):
@@ -150,5 +150,5 @@ def format_cursor(cursor):
         return format_bindtype(cursor)
     if cursor.kind == clang.CursorKind.FUNCTION_DECL:
         return format_bindlib(cursor.spelling, format_type(cursor.type))
-    # if cursor.kind == clang.CursorKind.TYPEDEF_DECL:
-    #     return format_bindalias(cursor)
+    if cursor.kind == clang.CursorKind.TYPEDEF_DECL:
+        return format_bindalias(cursor.spelling, format_type(cursor.underlying_typedef_type))
