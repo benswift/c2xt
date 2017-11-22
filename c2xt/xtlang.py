@@ -8,7 +8,7 @@ TARGET_SHLIB_NAME = 'libfoo'
 # big-ol' C -> xtlang primitive type mapping
 
 XTLANG_TYPE_DICT = {
-    clang.TypeKind.VOID: 'void',
+    clang.TypeKind.VOID: 'i8',
     clang.TypeKind.BOOL: 'i1',
     clang.TypeKind.CHAR_U: 'i8',
     clang.TypeKind.UCHAR: 'i8',
@@ -43,14 +43,18 @@ def format_type(type):
         depth = 1
         base_type = type.get_pointee()
         while base_type.kind == clang.TypeKind.POINTER:
-            print(type.spelling)
             depth += 1
             base_type = base_type.get_pointee()
+
         try:
             return format_type(base_type) + ('*' * depth)
         except KeyError:
             # if the base type isn't one of the primitives, assume it's a 'handle'
-            return base_type + ('*' * depth)
+            opaque_type = base_type.get_declaration()
+            if opaque_type.kind == CursorKind.NO_DECL_FOUND:
+                raise KeyError('Unknown base type: {}'.format(type.kind))
+            else:
+                return opaque_type.spelling + ('*' * depth)
 
     if type.kind == clang.TypeKind.ELABORATED:
         return format_type(type.get_canonical())
@@ -79,8 +83,7 @@ def format_type(type):
         try:
             return XTLANG_TYPE_DICT[type.kind]
         except KeyError:
-            print('Unknown base type: {}'.format(type.kind))
-            raise
+            raise KeyError('Unknown base type: {}'.format(type.kind))
 
 
 def format_bindval(name, type, value, docstring=""):
