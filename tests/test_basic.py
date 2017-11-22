@@ -80,6 +80,20 @@ class TestXtlangTypes:
         assert xtlang.format_type(cursor.type) == 'i8*'
 
 
+    # def test_function_pointer(self):
+    #     cursor = get_test_cursor('double (*func1)(double) = cm_to_inches;', 'func1')
+    #     print(cursor.type.kind)
+    #     for c in cursor.get_children():
+    #         print(c.spelling, c.type.kind)
+    #     assert xtlang.format_type(cursor.type) == '[double,double]*'
+
+
+    # def test_function_pointer_typedef(self):
+    #     cursor = get_test_cursor('typedef double (*benfunc)(double);', 'benfunc')
+    #     print(cursor.underlying_typedef_type.get_pointee())
+    #     assert xtlang.format_type(cursor.type) == '[double,double]*'
+
+
 class TestSingleDefinitions:
 
 
