@@ -95,8 +95,8 @@ def format_bindlib(name, type, docstring=""):
     return '(bind-lib {0} {1} {2} "{3}")'.format(TARGET_SHLIB_NAME, name, type, docstring)
 
 
-def format_bindlibval(library, name, type, docstring=""):
-    return '(bind-lib-val {0} {1} {2} "{3}")'.format(library, name, type, docstring)
+def format_bindlibval(name, type, docstring=""):
+    return '(bind-lib-val {0} {1} {2} "{3}")'.format(TARGET_SHLIB_NAME, name, type, docstring)
 
 
 # enum is kindof a special case because each child is a separate bind-val,
@@ -141,7 +141,7 @@ def format_cursor(cursor):
     if cursor.kind == clang.CursorKind.MACRO_DEFINITION:
         return format_macro_definition(cursor)
     if cursor.kind == clang.CursorKind.VAR_DECL:
-        return format_bindlibval(cursor)
+        return format_bindlibval(cursor.spelling, format_type(cursor.type))
     if cursor.kind == clang.CursorKind.STRUCT_DECL:
         return format_bindtype(cursor)
     if cursor.kind == clang.CursorKind.FUNCTION_DECL:
