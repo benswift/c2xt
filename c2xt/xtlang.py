@@ -119,7 +119,6 @@ def format_enum(enum_cursor):
 def format_macro_definition(defn_cursor):
     assert defn_cursor.kind == clang.CursorKind.MACRO_DEFINITION
     token = list(defn_cursor.get_tokens())[1]
-    print('token {} {}'.format(token.kind, token.spelling))
 
     if token.kind == clang.TokenKind.LITERAL:
 
