@@ -147,7 +147,7 @@ def format_cursor(cursor):
     if cursor.kind == clang.CursorKind.VAR_DECL:
         return format_bindlibval(cursor.spelling, format_type(cursor.type))
     if cursor.kind == clang.CursorKind.STRUCT_DECL:
-        return format_bindtype(cursor)
+        return format_bindtype(cursor.spelling, format_type(cursor.type))
     if cursor.kind == clang.CursorKind.FUNCTION_DECL:
         return format_bindlib(cursor.spelling, format_type(cursor.type))
     if cursor.kind == clang.CursorKind.TYPEDEF_DECL:
