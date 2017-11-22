@@ -46,7 +46,11 @@ def format_type(type):
             print(type.spelling)
             depth += 1
             base_type = base_type.get_pointee()
-        return format_type(base_type) + ('*' * depth)
+        try:
+            return format_type(base_type) + ('*' * depth)
+        except KeyError:
+            # if the base type isn't one of the primitives, assume it's a 'handle'
+            return base_type + ('*' * depth)
 
     if type.kind == clang.TypeKind.ELABORATED:
         return format_type(type.get_canonical())
