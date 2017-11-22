@@ -53,3 +53,7 @@ class TestNanoVG:
     def test_nvgCreateImageRGBA(self):
         cursor = find_child(self.nvg, 'nvgCreateImageRGBA')
         assert xtlang.format_type(cursor.type) == '[i32,NVGcontext*,i32,i32,i32,i8*]*'
+
+    def test_NVGparams(self):
+        cursor = find_child(self.nvg, 'NVGparams')
+        assert xtlang.format_type(cursor.type) == '<i8*,i32,i8*,i8*,i8*,i8*,i8*,i8*,i8*,i8*,i8*,i8*,i8*,i8*>'

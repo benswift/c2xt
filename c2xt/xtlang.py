@@ -46,6 +46,9 @@ def format_type(type):
             depth += 1
             base_type = base_type.get_pointee()
 
+        if base_type.kind == clang.TypeKind.UNEXPOSED:
+            # i8* is xtlang's pointer to void
+            return 'i8' + ('*' * depth)
         if base_type.get_declaration().kind == clang.CursorKind.NO_DECL_FOUND:
             return format_type(base_type) + ('*' * depth)
         else:
