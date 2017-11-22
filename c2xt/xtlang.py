@@ -102,7 +102,8 @@ def format_bindlibval(library, name, type, docstring=""):
 # enum is kindof a special case because each child is a separate bind-val,
 # so it's higher-level than the others
 def format_enum(enum_cursor):
-    assert enum_cursor.kind == clang.CursorKind.ENUM_DECL
+    assert enum_cursor.kind in [clang.CursorKind.ENUM_DECL,
+                                clang.CursorKind.ENUM_CONSTANT_DECL]
     enum_type = format_type(enum_cursor.enum_type)
 
     enum_bindval_strings = [format_bindval(c.spelling, enum_type, c.enum_value) for c in enum_cursor.get_children()]
