@@ -73,12 +73,20 @@ def format_type(type):
         return format_type(type.get_definition().type)
 
     if type.kind == clang.TypeKind.FUNCTIONPROTO:
+
+        # return type
         return_type = type.get_result()
+        if return_type.kind == clang.TypeKind.VOID:
+            return_type_string = 'void'
+        else:
+            return_type_string = format_type(return_type)
+
+        # argument type(s)
         arg_types = [format_type(t) for t in type.argument_types()]
         if arg_types:
-            return '[{},{}]*'.format(format_type(return_type), ",".join(arg_types))
+            return '[{},{}]*'.format(return_type_string, ",".join(arg_types))
         else:
-            return '[{}]*'.format(format_type(return_type))
+            return '[{}]*'.format(return_type_string)
 
     else:
         try:
