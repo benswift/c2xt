@@ -9,4 +9,4 @@ try:
     clang.Config.set_library_path(LLVM_LIB_PATH)
 except ImportError:
     print('Error: could not find LLVM python bindings')
-    exit(1)
+    raise
