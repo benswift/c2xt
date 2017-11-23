@@ -46,7 +46,7 @@ def process_file(filename, outfile, pp_definitions):
             print('Warning: already seen {}, ignoring new {}'.format(c.spelling, c.type.kind))
         else:
             names.append(c.spelling)
-            print(xtlang.format_cursor(c), end='\r\n', file=outfile)
+            print(xtlang.format_cursor(c), file=outfile)
 
 
 def main():
