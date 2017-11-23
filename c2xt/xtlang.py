@@ -201,3 +201,8 @@ def output_header(libname, author, comment):
          "{0}.dll")))
 """.format(libname, author, comment, datetime.datetime.now())
 
+
+def output_footer(libname):
+   return """(impc:aot:insert-footer "xtm{0}")
+(define *xtmlib-{0}-loaded* #t)
+""".format(libname)
