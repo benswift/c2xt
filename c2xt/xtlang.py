@@ -75,7 +75,10 @@ def format_type(type):
     if type.kind == clang.TypeKind.FUNCTIONPROTO:
         return_type = type.get_result()
         arg_types = [format_type(t) for t in type.argument_types()]
-        return '[{},{}]*'.format(format_type(return_type), ",".join(arg_types))
+        if arg_types:
+            return '[{},{}]*'.format(format_type(return_type), ",".join(arg_types))
+        else:
+            return '[{}]*'.format(format_type(return_type))
 
     else:
         try:
