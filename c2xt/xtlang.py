@@ -57,6 +57,9 @@ def format_type(type):
     if type.kind == clang.TypeKind.ELABORATED:
         return format_type(type.get_canonical())
 
+    if type.kind == clang.TypeKind.TYPEDEF:
+        return type.spelling
+
     if type.kind == clang.TypeKind.CONSTANTARRAY:
         return '|{},{}|'.format(type.element_count, format_type(type.element_type))
 
@@ -65,12 +68,7 @@ def format_type(type):
         return format_type(type.element_type) + '*'
 
     if type.kind == clang.TypeKind.RECORD:
-        member_types = []
-        for c in type.get_fields():
-            if c.type.kind == clang.TypeKind.TYPEDEF:
-                member_types.append(c.spelling)
-            else:
-                member_types.append(format_type(c.type))
+        member_types = [format_type(c.type) for c in type.get_fields()]
         return '<{}>'.format(",".join(member_types))
 
     # anonymous struct declarations
