@@ -1,10 +1,6 @@
 import clang.cindex as clang
 import sys
 
-# globals (yuck)
-
-TARGET_SHLIB_NAME = 'libfoo'
-
 # big-ol' C -> xtlang primitive type mapping
 
 XTLANG_TYPE_DICT = {
@@ -99,12 +95,12 @@ def format_bindtype(name, type, docstring=""):
     return '(bind-type {0} {1} "{2}")'.format(name, type, docstring)
 
 
-def format_bindlib(name, type, docstring=""):
-    return '(bind-lib {0} {1} {2} "{3}")'.format(TARGET_SHLIB_NAME, name, type, docstring)
+def format_bindlib(libname, name, type, docstring=""):
+    return '(bind-lib {0} {1} {2} "{3}")'.format(libname, name, type, docstring)
 
 
-def format_bindlibval(name, type, docstring=""):
-    return '(bind-lib-val {0} {1} {2} "{3}")'.format(TARGET_SHLIB_NAME, name, type, docstring)
+def format_bindlibval(libname, name, type, docstring=""):
+    return '(bind-lib-val {0} {1} {2} "{3}")'.format(libname, name, type, docstring)
 
 
 # enum is kindof a special case because each child is a separate bind-val,
@@ -142,16 +138,16 @@ def format_macro_definition(defn_cursor):
 
 # mother-of-all dispatch function (TODO doesn't work yet)
 
-def format_cursor(cursor):
+def format_cursor(cursor, libname):
     if cursor.kind in [clang.CursorKind.ENUM_DECL, clang.CursorKind.ENUM_CONSTANT_DECL]:
         return '\n'.join(format_enum(cursor))
     if cursor.kind == clang.CursorKind.MACRO_DEFINITION:
         return format_macro_definition(cursor)
     if cursor.kind == clang.CursorKind.VAR_DECL:
-        return format_bindlibval(cursor.spelling, format_type(cursor.type))
+        return format_bindlibval(libname, cursor.spelling, format_type(cursor.type))
     if cursor.kind == clang.CursorKind.STRUCT_DECL:
         return format_bindtype(cursor.spelling, format_type(cursor.type))
     if cursor.kind == clang.CursorKind.FUNCTION_DECL:
-        return format_bindlib(cursor.spelling, format_type(cursor.type))
+        return format_bindlib(libname, cursor.spelling, format_type(cursor.type))
     if cursor.kind == clang.CursorKind.TYPEDEF_DECL:
         return format_bindalias(cursor.spelling, format_type(cursor.underlying_typedef_type))

@@ -38,7 +38,7 @@ def find_child(cursor, name):
     raise NameError('no child cursor with name "{}" found'.format(name))
 
 
-def process_file(filename, outfile, pp_definitions):
+def process_header_file(filename, libname, outfile, pp_definitions):
     main_cursor = parse_file(filename, pp_definitions)
     names = []
     for c in main_cursor.get_children():
@@ -46,21 +46,24 @@ def process_file(filename, outfile, pp_definitions):
             print('Warning: already seen {}, ignoring new {}'.format(c.spelling, c.type.kind))
         else:
             names.append(c.spelling)
-            print(xtlang.format_cursor(c), file=outfile)
+            print(xtlang.format_cursor(c, libname), file=outfile)
 
 
 def main():
     try:
         # ./c2xt.py infile [outfile preprocessor_definitions ...]
         with open(sys.argv[2], 'w') as outfile:
-            process_file(sys.argv[1], outfile, sys.argv[3:])
+            process_header_file(sys.argv[1], outfile, sys.argv[3:])
         exit(0)
     except Exception as err:
         print(err)
         exit(1)
+
+
 def process_nanovg():
     with open('tests/nanovg.xtm', 'w') as outfile:
-        process_file('tests/nanovg.h', outfile, [])
+        process_header_file('tests/nanovg.h', 'libnanovg', outfile, [])
+
 
 if __name__ == '__main__':
     # main()
