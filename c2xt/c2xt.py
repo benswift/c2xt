@@ -40,8 +40,13 @@ def find_child(cursor, name):
 
 def process_file(filename, outfile, pp_definitions):
     main_cursor = parse_file(filename, pp_definitions)
+    names = []
     for c in main_cursor.get_children():
-        print(xtlang.format_cursor(c), end='\r\n', file=outfile)
+        if c.spelling in names:
+            print('Warning: already seen {}, ignoring new {}'.format(c.spelling, c.type.kind))
+        else:
+            names.append(c.spelling)
+            print(xtlang.format_cursor(c), end='\r\n', file=outfile)
 
 
 def main():
@@ -53,7 +58,10 @@ def main():
     except Exception as err:
         print(err)
         exit(1)
-
+def process_nanovg():
+    with open('tests/nanovg.xtm', 'w') as outfile:
+        process_file('tests/nanovg.h', outfile, [])
 
 if __name__ == '__main__':
-    main()
+    # main()
+    process_nanovg()
