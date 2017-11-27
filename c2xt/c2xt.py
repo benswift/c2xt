@@ -47,7 +47,8 @@ def process_header_file(filename, libname, outfile, pp_definitions, opaques):
     for c in main_cursor.get_children():
         if not in_stdlib(c.location.file.name):
             if c.spelling in names:
-                print('Warning: already seen {}, ignoring new {}'.format(c.spelling, c.type.kind))
+                # print('Warning: already seen {}, ignoring new {}'.format(c.spelling, c.type.kind))
+                pass
             elif c.spelling in opaques:
                 print(xtlang.format_bindalias(c.spelling, "i8"), file=outfile)
                 names.append(c.spelling)
