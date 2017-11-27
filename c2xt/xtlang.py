@@ -202,7 +202,8 @@ def output_header(libname, author, comment):
 """.format(libname, author, comment, datetime.datetime.now())
 
 
-def output_footer(libname):
-   return """(impc:aot:insert-footer "xtm{0}")
+def output_footer(libname, path):
+   return """(sys:load "{1}/{0}-bindings.xtm")
+(impc:aot:insert-footer "xtm{0}")
 (define *xtmlib-{0}-loaded* #t)
-""".format(libname)
+""".format(libname, path)
