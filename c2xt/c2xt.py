@@ -38,18 +38,22 @@ def find_child(cursor, name):
     raise NameError('no child cursor with name "{}" found'.format(name))
 
 
+def in_stdlib(filename):
+    return filename.startswith('/usr/include/')
+
 def process_header_file(filename, libname, outfile, pp_definitions, opaques):
     main_cursor = parse_file(filename, pp_definitions)
     names = []
     for c in main_cursor.get_children():
-        if c.spelling in names:
-            print('Warning: already seen {}, ignoring new {}'.format(c.spelling, c.type.kind))
-        elif c.spelling in opaques:
-            print(xtlang.format_bindalias(c.spelling, "i8*"), file=outfile)
-            names.append(c.spelling)
-        else:
-            print(xtlang.format_cursor(c, libname), file=outfile)
-            names.append(c.spelling)
+        if not in_stdlib(c.location.file.name):
+            if c.spelling in names:
+                print('Warning: already seen {}, ignoring new {}'.format(c.spelling, c.type.kind))
+            elif c.spelling in opaques:
+                print(xtlang.format_bindalias(c.spelling, "i8*"), file=outfile)
+                names.append(c.spelling)
+            else:
+                print(xtlang.format_cursor(c, libname), file=outfile)
+                names.append(c.spelling)
 
 
 def main():
