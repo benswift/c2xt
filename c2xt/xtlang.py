@@ -36,8 +36,6 @@ def is_primitive_type(type):
 
 
 def format_type(type):
-    # canonicalise
-    type = type.get_canonical()
 
     if type.kind == clang.TypeKind.POINTER:
         depth = 1
@@ -53,6 +51,9 @@ def format_type(type):
             return format_type(base_type) + ('*' * depth)
         else:
             return base_type.get_declaration().spelling + ('*' * depth)
+
+    if type.kind == clang.TypeKind.ELABORATED:
+        return format_type(type.get_canonical())
 
     if type.kind == clang.TypeKind.TYPEDEF:
         return type.spelling
