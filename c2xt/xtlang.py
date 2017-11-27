@@ -148,7 +148,7 @@ def format_macro_definition(defn_cursor):
         return None
 
 
-# mother-of-all dispatch function (TODO doesn't work yet)
+# mother-of-all dispatch function
 
 def format_cursor(cursor, libname):
     if cursor.kind in [clang.CursorKind.ENUM_DECL, clang.CursorKind.ENUM_CONSTANT_DECL]:
