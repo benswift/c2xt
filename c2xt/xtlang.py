@@ -35,6 +35,19 @@ def is_primitive_type(type):
     return type in keys(XTLANG_TYPE_DICT)
 
 
+def pointer_depth(type):
+    if type.kind == clang.TypeKind.POINTER:
+        depth = 1
+        base_type = type.get_pointee()
+        while base_type.kind == clang.TypeKind.POINTER:
+            depth += 1
+            base_type = base_type.get_pointee()
+        return depth
+    # for non-pointers, just return 0
+    else:
+        return 0
+
+
 def format_type(type):
 
     if type.kind == clang.TypeKind.POINTER:
