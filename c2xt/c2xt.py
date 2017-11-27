@@ -49,7 +49,7 @@ def process_header_file(filename, libname, outfile, pp_definitions, opaques):
             if c.spelling in names:
                 print('Warning: already seen {}, ignoring new {}'.format(c.spelling, c.type.kind))
             elif c.spelling in opaques:
-                print(xtlang.format_bindalias(c.spelling, "i8*"), file=outfile)
+                print(xtlang.format_bindalias(c.spelling, "i8"), file=outfile)
                 names.append(c.spelling)
             else:
                 print(xtlang.format_cursor(c, libname), file=outfile)
