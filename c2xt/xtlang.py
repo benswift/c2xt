@@ -137,7 +137,8 @@ def format_enum(enum_cursor):
     enum_type = format_type(enum_cursor.enum_type)
 
     enum_bindval_strings = [format_bindval(c.spelling, enum_type, c.enum_value) for c in enum_cursor.get_children()]
-    enum_bindval_strings.insert(0, format_bindalias(enum_cursor.spelling, enum_type, format_type(enum_cursor.type)))
+    if enum_cursor.spelling:
+        enum_bindval_strings.insert(0, format_bindalias(enum_cursor.spelling, enum_type, format_type(enum_cursor.type)))
     return enum_bindval_strings
 
 # #define
