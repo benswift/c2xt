@@ -49,6 +49,8 @@ def process_file(filename, libname, outfile, pp_definitions, pre_defined_types, 
     for c in main_cursor.get_children():
         if c.spelling in names:
             pass # ignore the things already seen
+        elif c.storage_class == clang.StorageClass.STATIC:
+            pass # ignore static functions
         elif c.spelling in pre_defined_types.keys():
             print(pre_defined_types[c.spelling], file=outfile)
             names.append(c.spelling)
