@@ -47,13 +47,13 @@ def process_file(filename, libname, outfile, pp_definitions, pre_defined_types, 
     main_cursor = parse_file(filename, pp_definitions)
     names = []
     for c in main_cursor.get_children():
-        if c.spelling in pre_defined_types.keys():
+        if c.spelling in names:
+            pass # ignore the things already seen
+        elif c.spelling in pre_defined_types.keys():
             print(pre_defined_types[c.spelling], file=outfile)
             names.append(c.spelling)
         elif in_stdlib(c.location.file.name):
             pass # ignore anything in the C standard library
-        elif c.spelling in names:
-            pass # ignore the things already seen
         elif c.spelling in opaque_types:
             print(xtlang.format_bindalias(c.spelling, "i8"), file=outfile)
             names.append(c.spelling)
