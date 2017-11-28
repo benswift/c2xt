@@ -179,7 +179,15 @@ def format_cursor(cursor, libname):
         return format_bindalias(cursor.spelling, format_type(cursor.underlying_typedef_type))
 
 
-def output_header(libname, author, comment):
+def output_header(libname, author, comment, deps=[]):
+    deps.insert(0, 'libs/base/base.xtm')
+    suppress_aot_deps = '\n '.join(['(sys:load "{}")'.format(dep) for dep in deps])
+    insert_forms_deps = '\n '.join(['(sys:load "{}" \'quiet)'.format(dep) for dep in deps])
+    deps_string = """(impc:aot:suppress-aot-do
+ {})
+(impc:aot:insert-forms
+ {})""".format(suppress_aot_deps, insert_forms_deps)
+
     return """;;; {0}.xtm -- {0} bindings for Extempore
 
 ;; Author: {1}
@@ -198,10 +206,7 @@ def output_header(libname, author, comment):
 (sys:load-preload-check '{0})
 (define *xtmlib-{0}-loaded* #f)
 
-(impc:aot:suppress-aot-do
- (sys:load "libs/base/base.xtm"))
-(impc:aot:insert-forms
- (sys:load "libs/base/base.xtm" 'quiet))
+{4}
 
 (impc:aot:insert-header "xtm{0}")
 
@@ -213,7 +218,7 @@ def output_header(libname, author, comment):
          "lib{0}.so")
         ((string=? (sys:platform) "Windows")
          "{0}.dll")))
-""".format(libname, author, comment, datetime.datetime.now())
+""".format(libname, author, comment, datetime.datetime.now(), deps_string)
 
 
 def output_footer(libname, path):
