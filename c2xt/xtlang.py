@@ -166,16 +166,26 @@ def format_macro_definition(defn_cursor):
 # mother-of-all dispatch function
 
 def format_cursor(cursor, libname):
+
     if cursor.kind in [clang.CursorKind.ENUM_DECL, clang.CursorKind.ENUM_CONSTANT_DECL]:
         return '\n'.join(format_enum(cursor))
+
     if cursor.kind == clang.CursorKind.MACRO_DEFINITION:
         return format_macro_definition(cursor)
+
     if cursor.kind == clang.CursorKind.VAR_DECL:
         return format_bindlibval(libname, cursor.spelling, format_type(cursor.type))
+
     if cursor.kind == clang.CursorKind.STRUCT_DECL:
-        return format_bindtype(cursor.spelling, format_type(cursor.type))
+        field_names = [c.spelling for c in cursor.get_children()]
+        docstring = '\n'.join(['@member {} - index {}'.format(field_names[i], i) for i in range(len(field_names))])
+        return format_bindtype(cursor.spelling, format_type(cursor.type), docstring)
+
     if cursor.kind == clang.CursorKind.FUNCTION_DECL:
-        return format_bindlib(libname, cursor.spelling, format_type(cursor.type))
+        arg_names = [c.spelling for c in cursor.get_children()]
+        docstring = '\n'.join(['@param {} - index {}'.format(arg_names[i], i) for i in range(len(arg_names))])
+        return format_bindlib(libname, cursor.spelling, format_type(cursor.type), docstring)
+
     if cursor.kind == clang.CursorKind.TYPEDEF_DECL:
         return format_bindalias(cursor.spelling, format_type(cursor.underlying_typedef_type))
 
