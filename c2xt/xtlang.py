@@ -177,13 +177,11 @@ def format_cursor(cursor, libname):
         return format_bindlibval(libname, cursor.spelling, format_type(cursor.type))
 
     if cursor.kind == clang.CursorKind.STRUCT_DECL:
-        field_names = [c.spelling for c in cursor.get_children()]
-        docstring = '\n'.join(['@member {} - index {}'.format(field_names[i], i) for i in range(len(field_names))])
+        docstring = '\n'.join(['@member {} - index {}'.format(c.spelling, i) for (i, c) in enumerate(cursor.get_children())])
         return format_bindtype(cursor.spelling, format_type(cursor.type), docstring)
 
     if cursor.kind == clang.CursorKind.FUNCTION_DECL:
-        arg_names = [c.spelling for c in cursor.get_children()]
-        docstring = '\n'.join(['@param {} - index {}'.format(arg_names[i], i) for i in range(len(arg_names))])
+        docstring = '\n'.join(['@param {} - index {}'.format(c.spelling, i) for (i, c) in enumerate(cursor.get_children())])
         return format_bindlib(libname, cursor.spelling, format_type(cursor.type), docstring)
 
     if cursor.kind == clang.CursorKind.TYPEDEF_DECL:
