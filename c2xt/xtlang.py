@@ -136,10 +136,22 @@ def format_enum(enum_cursor):
                                 clang.CursorKind.ENUM_CONSTANT_DECL]
     enum_type = format_type(enum_cursor.enum_type)
 
-    enum_bindval_strings = [format_bindval(c.spelling, enum_type, c.enum_value) for c in enum_cursor.get_children()]
+    xtlang_defns = []
+    # is it a named enum?
     if enum_cursor.spelling:
-        enum_bindval_strings.insert(0, format_bindalias(enum_cursor.spelling, enum_type, format_type(enum_cursor.type)))
-    return enum_bindval_strings
+        xtlang_defns.append(format_bindalias(enum_cursor.spelling, enum_type, format_type(enum_cursor.type)))
+        enum_type = enum_cursor.spelling
+
+    # now figure out the enum values
+    value = 0
+    for c in enum_cursor.get_children():
+        if c.enum_value:
+            xtlang_defns.append(format_bindval(c.spelling, enum_type, c.enum_value))
+        else:
+            xtlang_defns.append(format_bindval(c.spelling, enum_type, value))
+            value += 1
+
+    return xtlang_defns
 
 # #define
 
