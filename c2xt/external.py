@@ -24,3 +24,14 @@ def process_stb_image():
         c2xt.process_file(os.path.join(nanovg_dir, 'stb_image_resize.h'), 'libstb_image', outfile, ['STBI_FAILURE_USERMSG'], {}, [])
         c2xt.process_file(os.path.join(nanovg_dir, 'stb_image_write.h'), 'libstb_image', outfile, ['STBI_FAILURE_USERMSG'], {}, [])
         print(xtlang.output_footer('stb_image', 'libs/external'), file=outfile)
+
+
+def process_rtmidi():
+    rtmidi_dir = '/Users/ben/Documents/research/extemporelang/rtmidi'
+    extempore_dir = '/Users/ben/Documents/research/extemporelang/extempore'
+
+
+    with open(os.path.join(extempore_dir, 'libs', 'contrib', 'rtmidi.xtm'), 'w') as outfile:
+        print(xtlang.output_header('rtmidi', 'Ben Swift', 'Extempore bindings for Gary P. Scavone\'s RTMidi library', []), file=outfile)
+        c2xt.process_file(os.path.join(rtmidi_dir, 'rtmidi_c.h'), 'librtmidi', outfile, [], {}, [])
+        print(xtlang.output_footer('rtmidi', 'libs/contrib'), file=outfile)
