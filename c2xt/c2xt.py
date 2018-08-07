@@ -43,6 +43,7 @@ def find_child(cursor, name):
 def in_stdlib(filename):
     return filename.startswith('/usr/include/') or filename.startswith('/System/')
 
+
 def process_file(filename, libname, outfile, pp_definitions, pre_defined_types, opaque_types):
     main_cursor = parse_file(filename, pp_definitions)
 
