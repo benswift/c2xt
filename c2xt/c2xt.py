@@ -45,7 +45,15 @@ def in_stdlib(filename):
 
 def process_file(filename, libname, outfile, pp_definitions, pre_defined_types, opaque_types):
     main_cursor = parse_file(filename, pp_definitions)
-    names = []
+
+    # start with a few to ignore
+    names = [
+        "ptrdiff_t",
+        "size_t",
+        "wchar_t",
+        "max_align_t"
+    ]
+
     for c in main_cursor.get_children():
         if c.spelling in names:
             pass # ignore the things already seen
