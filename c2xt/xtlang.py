@@ -243,8 +243,14 @@ def output_header(libname, author, comment, deps=[]):
 """.format(libname, author, comment, datetime.datetime.now(), deps_string)
 
 
-def output_footer(libname, path):
-   return """(sys:load "{1}/{0}-bindings.xtm")
-(impc:aot:insert-footer "xtm{0}")
-(define *xtmlib-{0}-loaded* #t)
-""".format(libname, path)
+def output_footer(libname, path, scm_file=False):
+
+    footer = """(impc:aot:insert-footer "xtm{}")
+(define *xtmlib-{}-loaded* #t)
+""".format(libname)
+
+    # if there's gonna be a scheme file, append it to the footer
+    if scm_file:
+        footer = '(sys:load "{}/{}-scm.xtm")\n{}'.format(path, libname, footer)
+
+    return footer
