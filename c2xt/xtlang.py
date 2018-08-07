@@ -24,6 +24,7 @@ XTLANG_TYPE_DICT = {
     clang.TypeKind.LONGLONG: 'i64',
     clang.TypeKind.FLOAT: 'float',
     clang.TypeKind.DOUBLE: 'double',
+    clang.TypeKind.LONGDOUBLE: 'double',
     clang.TypeKind.NULLPTR: 'null',
     # clang.TypeKind.POINTER: 'i8*'
     clang.TypeKind.ENUM: 'i32'
