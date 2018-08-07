@@ -245,8 +245,8 @@ def output_header(libname, author, comment, deps=[]):
 
 def output_footer(libname, path, scm_file=False):
 
-    footer = """(impc:aot:insert-footer "xtm{}")
-(define *xtmlib-{}-loaded* #t)
+    footer = """(impc:aot:insert-footer "xtm{0}")
+(define *xtmlib-{0}-loaded* #t)
 """.format(libname)
 
     # if there's gonna be a scheme file, append it to the footer
