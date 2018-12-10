@@ -2,6 +2,9 @@ import c2xt
 import xtlang
 import os
 
+## yuck, all these special cases are kindof gross (and very Ben-specific).
+## should make this a CLI tool
+
 def process_nanovg():
     nanovg_dir = '/Users/ben/Documents/research/extemporelang/nanovg'
     extempore_dir = '/Users/ben/Documents/research/extemporelang/extempore'
