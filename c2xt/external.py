@@ -29,6 +29,17 @@ def process_stb_image():
         print(xtlang.output_footer('stb_image', 'libs/external'), file=outfile)
 
 
+def process_libsndfile():
+    rtmidi_dir = '/Users/ben/Documents/research/extemporelang/libsndfile/src'
+    extempore_dir = '/Users/ben/Documents/research/extemporelang/extempore'
+
+    # note: write constants as hex values
+    with open(os.path.join(extempore_dir, 'libs', 'external', 'sndfile.xtm'), 'w') as outfile:
+        print(xtlang.output_header('sndfile', 'Ben Swift', 'Extempore bindings for libsndfile', []), file=outfile)
+        c2xt.process_file(os.path.join(rtmidi_dir, 'sndfile.h'), 'libsndfile', outfile, [], {}, [])
+        print(xtlang.output_footer('sndfile', 'libs/external'), file=outfile)
+
+
 def process_rtmidi():
     rtmidi_dir = '/Users/ben/Documents/research/extemporelang/rtmidi'
     extempore_dir = '/Users/ben/Documents/research/extemporelang/extempore'

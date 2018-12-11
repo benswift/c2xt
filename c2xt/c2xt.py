@@ -74,4 +74,4 @@ def process_file(filename, libname, outfile, pp_definitions, pre_defined_types, 
 
 
 if __name__ == '__main__':
-    external.process_nanovg()
+    external.process_libsndfile()
