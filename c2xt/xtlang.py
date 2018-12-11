@@ -111,7 +111,7 @@ def format_type(type):
 
 
 def format_bindval(name, type, value, docstring=""):
-    return '(bind-val {0} {1} {2} "{3}")'.format(name, type, value, docstring)
+    return '(bind-val {0} {1} #x{2:X} "{3}")'.format(name, type, value, docstring)
 
 
 def format_bindalias(name, type, docstring=""):
@@ -127,7 +127,7 @@ def format_bindlib(libname, name, type, docstring=""):
 
 
 def format_bindlibval(libname, name, type, docstring=""):
-    return '(bind-lib-val {0} {1} {2} "{3}")'.format(libname, name, type, docstring)
+    return '(bind-lib-val {0} {1} #x{2:X} "{3}")'.format(libname, name, type, docstring)
 
 
 # enum is kindof a special case because each child is a separate bind-val,
